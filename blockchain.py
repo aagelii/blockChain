@@ -14,7 +14,7 @@ class blockchain(object):
         self.chain = []
         self.current_transactions = []
 
-        #need to create a root block
+        # need to create a root block
         self.new_block(proof=100, previous_hash=1)
     
     def new_block(self, proof, previous_hash):
@@ -100,7 +100,7 @@ class blockchain(object):
 app = Flask(__name__)
 
 # Generate a globally unique address for this node
-# Create a random name for our node
+# Create a random name for node
 node_identifier = str(uuid4()).replace('-', '')
 
 # Instantiate the Blockchain
@@ -109,12 +109,12 @@ blockchain = blockchain()
 # Create the /mine endpoint, which is a GET request
 @app.route('/mine', methods=['GET'])
 def mine():
-    # We run the proof of work algorithm to get the next proof...
+    # Run the proof of work algorithm to get the next proof
     last_block = blockchain.last_block
     last_proof = last_block['proof']
     proof = blockchain.proof_of_work(last_proof)
 
-    # We must receive a reward for finding the proof.
+    # Must receive a reward for finding the proof.
     # The sender is "0" to signify that this node has mined a new coin.
     blockchain.new_transaction(
         sender="0",
@@ -136,7 +136,7 @@ def mine():
     return jsonify(response), 200
 
 # Create the /transactions/new endpoint, which is a POST request,
-# since we’ll be sending data to it.
+# since sending data to it.
 @app.route('/transactions/new', methods=['POST'])
 def new_transaction():
     values = request.get_json()
@@ -167,4 +167,4 @@ def full_chain():
     return jsonify(response), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5455)
