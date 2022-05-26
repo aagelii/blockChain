@@ -1,9 +1,15 @@
+# for blockchain class
 import hashlib
 import json
 from time import time
 
+# for server
+from textwrap import dedent
+from uuid import uuid4
+from flask import Flask
 
-class blockchain:
+
+class blockchain(object):
     def __init__(self):
         self.chain = []
         self.current_transactions = []
@@ -89,3 +95,37 @@ class blockchain:
         guess = f'{last_proof}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000"
+
+# Instantiate our Node
+app = Flask(__name__)
+
+# Generate a globally unique address for this node
+# Create a random name for our node
+node_identifier = str(uuid4()).replace('-', '')
+
+# Instantiate the Blockchain
+blockchain = blockchain()
+
+# Create the /mine endpoint, which is a GET request
+@app.route('/mine', methods=['GET'])
+def mine():
+    return "We'll mine a new Block"
+
+# Create the /transactions/new endpoint, which is a POST request,
+# since we’ll be sending data to it.
+@app.route('/transactions/new', methods=['POST'])
+def new_transaction():
+    return "We'll add a new transaction"
+
+# Create the /chain endpoint, which returns the full Blockchain,
+# which is a GET request
+@app.route('/chain', methods=['GET'])
+def full_chain():
+    response = {
+        'chain': blockchain.chain,
+        'length': len(blockchain.chain),
+    }
+    return jsonify(response), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
